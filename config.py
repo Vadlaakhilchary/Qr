@@ -6,6 +6,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///qrcode_app.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
+    # Base URL for QR codes (external access)
+    BASE_URL = os.environ.get('BASE_URL') or None  # Will default to request host if None
+    
     # File upload setngs
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'uploads')
     QR_CODES_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'qr_codes')

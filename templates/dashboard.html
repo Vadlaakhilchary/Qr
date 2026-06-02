@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - QR Code Manager{% endblock %}
+
+{% block content %}
+<h1 style="color: white; margin-bottom: 2rem;">Dashboard</h1>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; font-size: 2.5rem;">{{ stats.total_qr_codes }}</h3>
+        <p style="color: #666;">Total QR Codes</p>
+    </div>
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; font-size: 2.5rem;">{{ stats.total_scans }}</h3>
+        <p style="color: #666;">Total Scans</p>
+    </div>
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #667eea; font-size: 2.5rem;">{{ stats.this_month_codes }}</h3>
+        <p style="color: #666;">This Month</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="margin-bottom: 1rem; color: #333;">Quick Actions</h2>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('generate') }}" class="btn btn-primary">Generate QR Code</a>
+        <a href="{{ url_for('scan') }}" class="btn btn-success">Scan QR Code</a>
+        <a href="{{ url_for('history') }}" class="btn btn-secondary">View History</a>
+    </div>
+</div>
+
+{% if recent_qr_codes %}
+<div class="card">
+    <h2 style="margin-bottom: 1rem; color: #333;">Recent QR Codes</h2>
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">
+                    <th style="padding: 1rem; text-align: left;">Name</th>
+                    <th style="padding: 1rem; text-align: left;">Data</th>
+                    <th style="padding: 1rem; text-align: left;">Created</th>
+                    <th style="padding: 1rem; text-align: left;">Scans</th>
+                    <th style="padding: 1rem; text-align: left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for qr in recent_qr_codes %}
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 1rem;">{{ qr.name }}</td>
+                    <td style="padding: 1rem;">{{ qr.original_data[:50] }}{% if qr.original_data|length > 50 %}...{% endif %}</td>
+                    <td style="padding: 1rem;">{{ qr.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td style="padding: 1rem;">{{ qr.scan_count }}</td>
+                    <td style="padding: 1rem;">
+                        <a href="{{ url_for('preview', qr_id=qr.id) }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

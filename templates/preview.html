@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Preview QR Code - QR Code Manager{% endblock %}
+
+{% block content %}
+<h1 style="color: white; margin-bottom: 2rem;">QR Code Preview</h1>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <!-- QR Code Image -->
+        <div class="card" style="text-align: center;">
+            <h2 style="margin-bottom: 1.5rem; color: #333;">QR Code</h2>
+            {% if qr_code.file_path %}
+                <img src="{{ url_for('qr_image', qr_id=qr_code.id) }}" alt="QR Code" style="max-width: 100%; border-radius: 10px; margin-bottom: 1rem;">
+            {% else %}
+                <p style="color: #999;">QR Code image not found</p>
+            {% endif %}
+            <a href="{{ url_for('download_qr', qr_id=qr_code.id) }}" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">Download</a>
+        </div>
+        
+        <!-- QR Code Details -->
+        <div class="card">
+            <h2 style="margin-bottom: 1.5rem; color: #333;">Details</h2>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #333;">Name:</strong>
+                <p style="color: #666;">{{ qr_code.name or 'Untitled' }}</p>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #333;">Data Type:</strong>
+                <p style="color: #666;">{{ qr_code.data_type }}</p>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #333;">Original Data:</strong>
+                <div style="background: #f5f5f5; padding: 0.8rem; border-radius: 5px; word-break: break-all;">{{ qr_code.original_data }}</div>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #333;">Status:</strong>
+                <p style="color: #666;">
+                    {% if qr_code.is_active %}
+                        {% if qr_code.is_expired %}
+                            <span style="color: #ffc107;">Expired</span>
+                        {% else %}
+                            <span style="color: #28a745;">Active</span>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: #dc3545;">Inactive</span>
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #333;">Total Scans:</strong>
+                <p style="color: #667eea; font-size: 1.5rem;">{{ qr_code.scan_count }}</p>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #333;">Created:</strong>
+                <p style="color: #666;">{{ qr_code.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            </div>
+            
+            {% if qr_code.expiry_date %}
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #333;">Expires:</strong>
+                <p style="color: #666;">{{ qr_code.expiry_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            </div>
+            {% endif %}
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 2rem;">
+                <form action="{{ url_for('toggle_qr', qr_id=qr_code.id) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn {% if qr_code.is_active %}btn-danger{% else %}btn-success{% endif %}" style="width: 100%;">
+                        {% if qr_code.is_active %}Deactivate{% else %}Activate{% endif %}
+                    </button>
+                </form>
+                <a href="{{ url_for('delete_qr', qr_id=qr_code.id) }}" class="btn btn-danger" onclick="return confirm('Are you sure?')" style="text-decoration: none; width: 100%; text-align: center;">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

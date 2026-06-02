@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}QR Code Statistics - QR Code Manager{% endblock %}
+
+{% block content %}
+<h1 style="color: white; margin-bottom: 2rem;">QR Code Statistics</h1>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <div class="card">
+        <h2 style="margin-bottom: 2rem; color: #333;">{{ qr_code.name or 'Untitled' }}</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div style="background: #f5f5f5; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                <h3 style="color: #667eea; font-size: 2rem;">{{ qr_code.scan_count }}</h3>
+                <p style="color: #666;">Total Scans</p>
+            </div>
+            
+            <div style="background: #f5f5f5; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                <h3 style="color: #667eea; font-size: 2rem;">
+                    {% if qr_code.is_active %}
+                        {% if qr_code.is_expired %}
+                            Expired
+                        {% else %}
+                            Active
+                        {% endif %}
+                    {% else %}
+                        Inactive
+                    {% endif %}
+                </h3>
+                <p style="color: #666;">Current Status</p>
+            </div>
+            
+            <div style="background: #f5f5f5; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                <h3 style="color: #667eea; font-size: 1.2rem;">{{ qr_code.data_type }}</h3>
+                <p style="color: #666;">Data Type</p>
+            </div>
+        </div>
+        
+        <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem; color: #333;">QR Code Data</h3>
+            <div style="background: white; padding: 1rem; border-radius: 5px; word-break: break-all; font-family: monospace;">
+                {{ qr_code.original_data }}
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+            <div>
+                <strong style="color: #333;">Created:</strong>
+                <p style="color: #666;">{{ qr_code.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            </div>
+            
+            {% if qr_code.expiry_date %}
+            <div>
+                <strong style="color: #333;">Expires:</strong>
+                <p style="color: #666;">{{ qr_code.expiry_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <a href="{{ url_for('preview', qr_id=qr_code.id) }}" class="btn btn-primary">Back to Preview</a>
+            <a href="{{ url_for('history') }}" class="btn btn-secondary">All QR Codes</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

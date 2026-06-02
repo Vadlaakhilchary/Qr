@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Generate QR Code - QR Code Manager{% endblock %}
+
+{% block content %}
+<h1 style="color: white; margin-bottom: 2rem;">Generate QR Code</h1>
+
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="card">
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="data_type">Data Type</label>
+                <select id="data_type" name="data_type">
+                    <option value="text">Text</option>
+                    <option value="url">URL</option>
+                    <option value="phone">Phone Number</option>
+                    <option value="email">Email</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="data">Data</label>
+                <textarea id="data" name="data" rows="4" required placeholder="Enter text, URL, phone number, or email"></textarea>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="foreground_color">Foreground Color</label>
+                    <input type="color" id="foreground_color" name="foreground_color" value="#000000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="background_color">Background Color</label>
+                    <input type="color" id="background_color" name="background_color" value="#FFFFFF">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="expiry_days">Expiry Days (optional)</label>
+                <input type="number" id="expiry_days" name="expiry_days" min="0" placeholder="Leave blank for no expiry">
+            </div>
+            
+            <div class="form-group">
+                <label for="logo">Upload Logo (optional)</label>
+                <input type="file" id="logo" name="logo" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="encrypt_data" style="width: auto;">
+                    Encrypt Data
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Generate QR Code</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

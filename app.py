@@ -32,6 +32,14 @@ qr_scanner = QRScanner()
 os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(Config.QR_CODES_FOLDER, exist_ok=True)
 
+def get_external_url(endpoint, **kwargs):
+    """Generate external URL that works on other devices (uses current request host)."""
+    # Build URL using the current request's host
+    scheme = request.scheme
+    host = request.host
+    path = url_for(endpoint, **kwargs)
+    return f"{scheme}://{host}{path}"
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -201,7 +209,7 @@ def generate():
                 pass
         
         # Generate QR code with dynamic URL
-        qr_url = url_for('qr_redirect', uid=uid, _external=True)
+        qr_url = get_external_url('qr_redirect', uid=uid)
         filename, filepath = qr_generator.generate(
             qr_url,
             uid,
@@ -489,6 +497,19 @@ def delete_qr(qr_id):
         return jsonify({'success': True})
     
     return redirect(url_for('history'))
+
+@app.route('/qr/image/<int:qr_id>')
+@login_required
+def qr_image(qr_id):
+    qr_code = QRCode.query.filter_by(id=qr_id, user_id=current_user.id).first_or_404()
+    
+    if not os.path.exists(qr_code.file_path):
+        abort(404)
+    
+    return send_file(
+        qr_code.file_path,
+        mimetype='image/png'
+    )
 
 @app.route('/qr/download/<int:qr_id>')
 @login_required
