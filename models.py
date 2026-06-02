@@ -37,10 +37,27 @@ class User(UserMixin, db.Model):
         db.session.commit()
     
     def get_stats(self):
-        now = datetime.now()  # ✅ FIXED
+        from sqlalchemy import func
+        from datetime import timezone
+        
+        now = datetime.now(timezone.utc)
+        today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        month_start = today.replace(day=1)
 
-        total = self.qr_codes.count()
+        # Total QR codes
+        total_qr_codes = self.qr_codes.count()
 
+        # Total scans across all QR codes
+        total_scans = db.session.query(func.sum(QRCode.scan_count)).filter(
+            QRCode.user_id == self.id
+        ).scalar() or 0
+
+        # QR codes created this month
+        this_month_codes = self.qr_codes.filter(
+            QRCode.created_at >= month_start
+        ).count()
+
+        # Additional stats
         active = self.qr_codes.filter_by(is_active=True).filter(
             (QRCode.expiry_date == None) | (QRCode.expiry_date > now)
         ).count()
@@ -53,7 +70,9 @@ class User(UserMixin, db.Model):
         inactive = self.qr_codes.filter_by(is_active=False).count()
         
         return {
-            'total': total,
+            'total_qr_codes': total_qr_codes,
+            'total_scans': total_scans,
+            'this_month_codes': this_month_codes,
             'active': active,
             'expired': expired,
             'inactive': inactive
