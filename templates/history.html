@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}QR Code History - QR Code Manager{% endblock %}
+{% block title %}QR Code History - QRStudio{% endblock %}
 
 {% block content %}
-<h1 style="color: white; margin-bottom: 2rem;">QR Code History</h1>
+<h1>QR Code History</h1>
 
-<div class="card">
-    <h2 style="margin-bottom: 1.5rem; color: #333;">Filter & Search</h2>
-    <form method="GET" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end;">
+<div class="card" style="border: 1px solid #f5e8df;">
+    <h2 style="margin-bottom: 1.5rem;">Filter & Search</h2>
+    <form method="GET" style="display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 1rem; align-items: end;">
         <div class="form-group" style="margin-bottom: 0;">
             <label for="search">Search Data</label>
             <input type="text" id="search" name="search" value="{{ search_query }}" placeholder="Search QR code data">
@@ -23,49 +23,47 @@
             </select>
         </div>
         
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="{{ url_for('history') }}" class="btn btn-secondary">Reset</a>
+        <button type="submit" class="btn btn-primary" style="margin-bottom: 0;">Filter</button>
+        <a href="{{ url_for('history') }}" class="btn btn-secondary" style="text-decoration: none; text-align: center;">Reset</a>
     </form>
 </div>
 
 {% if qr_codes.items %}
-<div class="card" style="margin-top: 2rem;">
+<div class="card" style="margin-top: 2rem; border: 1px solid #f5e8df;">
     <div style="overflow-x: auto;">
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
-                <tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">
-                    <th style="padding: 1rem; text-align: left;">Name</th>
-                    <th style="padding: 1rem; text-align: left;">Data</th>
-                    <th style="padding: 1rem; text-align: left;">Type</th>
-                    <th style="padding: 1rem; text-align: left;">Status</th>
-                    <th style="padding: 1rem; text-align: left;">Scans</th>
-                    <th style="padding: 1rem; text-align: left;">Created</th>
-                    <th style="padding: 1rem; text-align: left;">Actions</th>
+                <tr style="background: transparent; border-bottom: 2px solid #e8ddd0;">
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Data</th>
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Type</th>
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Status</th>
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Scans</th>
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Created</th>
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for qr in qr_codes.items %}
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 1rem;">{{ qr.name or 'Untitled' }}</td>
-                    <td style="padding: 1rem;">{{ qr.original_data[:40] }}{% if qr.original_data|length > 40 %}...{% endif %}</td>
+                <tr style="border-bottom: 1px solid #f0e8df;">
+                    <td style="padding: 1rem; color: #2c2c2c;">{{ qr.original_data[:40] }}{% if qr.original_data|length > 40 %}...{% endif %}</td>
                     <td style="padding: 1rem;">
-                        <span style="background: #e9ecef; padding: 0.25rem 0.5rem; border-radius: 3px; font-size: 0.85rem;">
+                        <span style="background: #f0e8df; color: #8b7d6b; padding: 0.35rem 0.7rem; border-radius: 4px; font-size: 0.85rem; font-weight: 500;">
                             {{ qr.data_type }}
                         </span>
                     </td>
                     <td style="padding: 1rem;">
                         {% if qr.is_active %}
                             {% if qr.is_expired %}
-                                <span style="color: #ffc107;">Expired</span>
+                                <span style="color: #c97c6f; font-weight: 600;">Expired</span>
                             {% else %}
-                                <span style="color: #28a745;">Active</span>
+                                <span style="color: #8b9e73; font-weight: 600;">Active</span>
                             {% endif %}
                         {% else %}
-                            <span style="color: #dc3545;">Inactive</span>
+                            <span style="color: #a89393; font-weight: 600;">Inactive</span>
                         {% endif %}
                     </td>
-                    <td style="padding: 1rem;">{{ qr.scan_count }}</td>
-                    <td style="padding: 1rem;">{{ qr.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td style="padding: 1rem; color: #d97757; font-weight: 600;">{{ qr.scan_count }}</td>
+                    <td style="padding: 1rem; color: #8b7d6b; font-size: 0.9rem;">{{ qr.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td style="padding: 1rem;">
                         <a href="{{ url_for('preview', qr_id=qr.id) }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; margin-right: 0.5rem;">View</a>
                         <a href="{{ url_for('view_qr', qr_id=qr.id) }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Stats</a>
@@ -83,7 +81,7 @@
             <a href="{{ url_for('history', page=qr_codes.prev_num, search=search_query, status=status_filter) }}" class="btn btn-secondary">Previous</a>
         {% endif %}
         
-        <span style="margin: 0 1rem; color: #666;">Page {{ qr_codes.page }} of {{ qr_codes.pages }}</span>
+        <span style="margin: 0 1rem; color: #8b7d6b;">Page {{ qr_codes.page }} of {{ qr_codes.pages }}</span>
         
         {% if qr_codes.has_next %}
             <a href="{{ url_for('history', page=qr_codes.next_num, search=search_query, status=status_filter) }}" class="btn btn-secondary">Next</a>
@@ -92,8 +90,8 @@
     {% endif %}
 </div>
 {% else %}
-<div class="card" style="margin-top: 2rem; text-align: center;">
-    <p style="color: #666; padding: 2rem;">No QR codes found. <a href="{{ url_for('generate') }}" style="color: #667eea;">Create one now!</a></p>
+<div class="card" style="margin-top: 2rem; text-align: center; border: 1px solid #f5e8df;">
+    <p style="color: #8b7d6b; padding: 2rem; font-size: 0.95rem;">No QR codes found. <a href="{{ url_for('generate') }}" style="color: #d97757; font-weight: 600; text-decoration: none;">Create one now!</a></p>
 </div>
 {% endif %}
 {% endblock %}

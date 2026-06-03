@@ -1,71 +1,66 @@
 {% extends "base.html" %}
 
-{% block title %}Preview QR Code - QR Code Manager{% endblock %}
+{% block title %}Preview QR Code - QRStudio{% endblock %}
 
 {% block content %}
-<h1 style="color: white; margin-bottom: 2rem;">QR Code Preview</h1>
+<h1>QR Code Preview</h1>
 
-<div style="max-width: 800px; margin: 0 auto;">
+<div style="max-width: 900px; margin: 0 auto;">
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
         <!-- QR Code Image -->
-        <div class="card" style="text-align: center;">
-            <h2 style="margin-bottom: 1.5rem; color: #333;">QR Code</h2>
+        <div class="card" style="text-align: center; border: 1px solid #f5e8df;">
+            <h2>QR Code</h2>
             {% if qr_code.file_path %}
-                <img src="{{ url_for('qr_image', qr_id=qr_code.id) }}" alt="QR Code" style="max-width: 100%; border-radius: 10px; margin-bottom: 1rem;">
+                <img src="{{ url_for('qr_image', qr_id=qr_code.id) }}" alt="QR Code" style="max-width: 100%; border-radius: 12px; margin: 1.5rem 0; border: 1px solid #e8ddd0;">
             {% else %}
-                <p style="color: #999;">QR Code image not found</p>
+                <p style="color: #a89393;">QR Code image not found</p>
             {% endif %}
-            <a href="{{ url_for('download_qr', qr_id=qr_code.id) }}" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">Download</a>
+            <a href="{{ url_for('download_qr', qr_id=qr_code.id) }}" class="btn btn-primary" style="width: 100%; margin-bottom: 0.5rem;">Download QR Code</a>
         </div>
         
         <!-- QR Code Details -->
-        <div class="card">
-            <h2 style="margin-bottom: 1.5rem; color: #333;">Details</h2>
+        <div class="card" style="border: 1px solid #f5e8df;">
+            <h2>Details</h2>
             
-            <div style="margin-bottom: 1rem;">
-                <strong style="color: #333;">Name:</strong>
-                <p style="color: #666;">{{ qr_code.name or 'Untitled' }}</p>
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="color: #2c2c2c; display: block; margin-bottom: 0.3rem;">Data Type:</strong>
+                <span style="background: #f0e8df; color: #8b7d6b; padding: 0.35rem 0.7rem; border-radius: 4px; font-size: 0.9rem;">{{ qr_code.data_type }}</span>
             </div>
             
-            <div style="margin-bottom: 1rem;">
-                <strong style="color: #333;">Data Type:</strong>
-                <p style="color: #666;">{{ qr_code.data_type }}</p>
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="color: #2c2c2c; display: block; margin-bottom: 0.3rem;">Original Data:</strong>
+                <div style="background: #fdfcfb; padding: 1rem; border-radius: 8px; word-break: break-all; border: 1px solid #f5e8df; color: #2c2c2c; font-family: monospace; font-size: 0.9rem;">{{ qr_code.original_data }}</div>
             </div>
             
-            <div style="margin-bottom: 1rem;">
-                <strong style="color: #333;">Original Data:</strong>
-                <div style="background: #f5f5f5; padding: 0.8rem; border-radius: 5px; word-break: break-all;">{{ qr_code.original_data }}</div>
-            </div>
-            
-            <div style="margin-bottom: 1rem;">
-                <strong style="color: #333;">Status:</strong>
-                <p style="color: #666;">
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="color: #2c2c2c; display: block; margin-bottom: 0.3rem;">Status:</strong>
+                <p style="color: #2c2c2c;">
                     {% if qr_code.is_active %}
                         {% if qr_code.is_expired %}
-                            <span style="color: #ffc107;">Expired</span>
+                            <span style="color: #c97c6f; font-weight: 600;">Expired</span>
                         {% else %}
-                            <span style="color: #28a745;">Active</span>
+                            <span style="color: #8b9e73; font-weight: 600;">Active</span>
                         {% endif %}
                     {% else %}
-                        <span style="color: #dc3545;">Inactive</span>
+                        <span style="color: #a89393; font-weight: 600;">Inactive</span>
                     {% endif %}
                 </p>
             </div>
             
-            <div style="margin-bottom: 1rem;">
-                <strong style="color: #333;">Total Scans:</strong>
-                <p style="color: #667eea; font-size: 1.5rem;">{{ qr_code.scan_count }}</p>
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="color: #2c2c2c; display: block; margin-bottom: 0.3rem;">Total Scans:</strong>
+                <p style="color: #d97757; font-size: 1.8rem; font-weight: 700; margin: 0;">{{ qr_code.scan_count }}</p>
             </div>
             
-            <div style="margin-bottom: 1rem;">
-                <strong style="color: #333;">Created:</strong>
-                <p style="color: #666;">{{ qr_code.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <div style="margin-bottom: 1.5rem;">
+                <strong style="color: #2c2c2c; display: block; margin-bottom: 0.3rem;">Created:</strong>
+                <p style="color: #8b7d6b; font-size: 0.9rem;">{{ qr_code.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
             </div>
             
             {% if qr_code.expiry_date %}
-            <div style="margin-bottom: 1rem;">
-                <strong style="color: #333;">Expires:</strong>
-                <p style="color: #666;">{{ qr_code.expiry_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <div style="margin-bottom: 2rem;">
+                <strong style="color: #2c2c2c; display: block; margin-bottom: 0.3rem;">Expires:</strong>
+                <p style="color: #8b7d6b; font-size: 0.9rem;">{{ qr_code.expiry_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
             </div>
             {% endif %}
             

@@ -1,57 +1,65 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - QR Code Manager{% endblock %}
+{% block title %}Dashboard - QRStudio{% endblock %}
 
 {% block content %}
-<h1 style="color: white; margin-bottom: 2rem;">Dashboard</h1>
+<!-- Welcome Message -->
+<div class="card" style="background: #fef9f5; border: 1px solid #f5e8df; margin-bottom: 2rem; text-align: center;">
+    <p style="font-size: 1.05rem; color: #d97757; font-weight: 500;">
+        ✦ Welcome back, <strong>{{ current_user.username }}</strong>! Ready to create today?
+    </p>
+</div>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-    <div class="card" style="text-align: center;">
-        <h3 style="color: #667eea; font-size: 2.5rem;">{{ stats.total_qr_codes }}</h3>
-        <p style="color: #666;">Total QR Codes</p>
+<h1>Dashboard</h1>
+
+<!-- Stats Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+    <div class="card" style="text-align: center; border: 1px solid #f5e8df; padding: 1.8rem;">
+        <h3 style="color: #d97757; font-size: 2.8rem; margin-bottom: 0.5rem; font-weight: 700;">{{ stats.total_qr_codes }}</h3>
+        <p style="color: #8b7d6b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">QR Codes</p>
     </div>
-    <div class="card" style="text-align: center;">
-        <h3 style="color: #667eea; font-size: 2.5rem;">{{ stats.total_scans }}</h3>
-        <p style="color: #666;">Total Scans</p>
+    <div class="card" style="text-align: center; border: 1px solid #f5e8df; padding: 1.8rem;">
+        <h3 style="color: #d97757; font-size: 2.8rem; margin-bottom: 0.5rem; font-weight: 700;">{{ stats.total_scans }}</h3>
+        <p style="color: #8b7d6b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Total Scans</p>
     </div>
-    <div class="card" style="text-align: center;">
-        <h3 style="color: #667eea; font-size: 2.5rem;">{{ stats.this_month_codes }}</h3>
-        <p style="color: #666;">This Month</p>
+    <div class="card" style="text-align: center; border: 1px solid #f5e8df; padding: 1.8rem;">
+        <h3 style="color: #d97757; font-size: 2.8rem; margin-bottom: 0.5rem; font-weight: 700;">{{ stats.this_month_codes }}</h3>
+        <p style="color: #8b7d6b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">This Month</p>
     </div>
 </div>
 
-<div class="card">
-    <h2 style="margin-bottom: 1rem; color: #333;">Quick Actions</h2>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+<!-- Quick Actions -->
+<div class="card" style="border: 1px solid #f5e8df;">
+    <h2>Quick Actions</h2>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
         <a href="{{ url_for('generate') }}" class="btn btn-primary">Generate QR Code</a>
         <a href="{{ url_for('scan') }}" class="btn btn-success">Scan QR Code</a>
         <a href="{{ url_for('history') }}" class="btn btn-secondary">View History</a>
     </div>
 </div>
 
+<!-- Recent QR Codes -->
 {% if recent_qr_codes %}
-<div class="card">
-    <h2 style="margin-bottom: 1rem; color: #333;">Recent QR Codes</h2>
-    <div style="overflow-x: auto;">
+<div class="card" style="border: 1px solid #f5e8df;">
+    <h2>Recent QR Codes</h2>
+    <div style="overflow-x: auto; margin-top: 1.5rem;">
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
-                <tr style="background: #f5f5f5; border-bottom: 2px solid #ddd;">
-                    <th style="padding: 1rem; text-align: left;">Name</th>
-                    <th style="padding: 1rem; text-align: left;">Data</th>
-                    <th style="padding: 1rem; text-align: left;">Created</th>
-                    <th style="padding: 1rem; text-align: left;">Scans</th>
-                    <th style="padding: 1rem; text-align: left;">Actions</th>
+                <tr style="background: transparent; border-bottom: 2px solid #e8ddd0;">
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Data</th>
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Created</th>
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Scans</th>
+                    <th style="padding: 1rem; text-align: left; color: #2c2c2c; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for qr in recent_qr_codes %}
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 1rem;">{{ qr.name }}</td>
-                    <td style="padding: 1rem;">{{ qr.original_data[:50] }}{% if qr.original_data|length > 50 %}...{% endif %}</td>
-                    <td style="padding: 1rem;">{{ qr.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td style="padding: 1rem;">{{ qr.scan_count }}</td>
+                <tr style="border-bottom: 1px solid #f0e8df;">
+                    <td style="padding: 1rem; color: #2c2c2c;">{{ qr.original_data[:50] }}{% if qr.original_data|length > 50 %}...{% endif %}</td>
+                    <td style="padding: 1rem; color: #8b7d6b; font-size: 0.9rem;">{{ qr.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td style="padding: 1rem; color: #d97757; font-weight: 600;">{{ qr.scan_count }}</td>
                     <td style="padding: 1rem;">
-                        <a href="{{ url_for('preview', qr_id=qr.id) }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">View</a>
+                        <a href="{{ url_for('preview', qr_id=qr.id) }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">View</a>
                     </td>
                 </tr>
                 {% endfor %}
